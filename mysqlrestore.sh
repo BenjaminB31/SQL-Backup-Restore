@@ -22,7 +22,6 @@ fi
 echo "$(cd $BACKUP_DIR/$date; for f in *.sql.gz; do printf "%s\n" "${f%.sql.gz}"; done)"
 read -p "Nom de la base à restaurer: " db
 
-
 if [ -f "$BACKUP_DIR/$date/$db.sql.gz" ];then
  echo "La base $db existe";
 else
