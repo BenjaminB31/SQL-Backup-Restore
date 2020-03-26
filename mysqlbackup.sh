@@ -1,4 +1,5 @@
 #!/bin/bash
+# https://github.com/BenjaminB31/SQL-Backup-Restore
 
 #Localisation des backups
 BACKUP_DIR="/home/save/sql"

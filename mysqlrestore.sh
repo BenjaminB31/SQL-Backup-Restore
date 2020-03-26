@@ -1,4 +1,5 @@
 #!/bin/bash
+# https://github.com/BenjaminB31/SQL-Backup-Restore
 
 #Localisation des backups
 BACKUP_DIR="/home/save/sql"
@@ -6,7 +7,6 @@ BACKUP_DIR="/home/save/sql"
 # Utilisateur SQL
 MYSQL_USER="save"
 MYSQL_PASSWORD="save"
-
 
 
 echo "$(ls $BACKUP_DIR)"
