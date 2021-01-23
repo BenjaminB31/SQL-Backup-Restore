@@ -24,7 +24,7 @@ for db in $databases; do
 echo $db
 $MYSQLDUMP --force --opt --user=$MYSQL_USER -p$MYSQL_PASSWORD --skip-lock-tables --events --databases $db | gzip > "$BACKUP_DIR/$DATE/$db.sql.gz"
 done
-echo "Utilisateurs et droits"
+echo "Users and rights"
 mkdir "$BACKUP_DIR/$DATE/mysql"
 $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "select * from mysql.user " | sed 's/\t/,/g' > "$BACKUP_DIR/$DATE/mysql/user.csv"
 $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "select * from mysql.db " | sed 's/\t/,/g' > "$BACKUP_DIR/$DATE/mysql/db.csv"
