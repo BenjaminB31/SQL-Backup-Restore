@@ -26,7 +26,7 @@ $MYSQLDUMP --force --opt --user=$MYSQL_USER -p$MYSQL_PASSWORD --skip-lock-tables
 done
 echo "Utilisateurs et droits"
 mkdir "$BACKUP_DIR/$DATE/mysql"
-$MYSQL -usave -psave -e "select * from mysql.user " | sed 's/\t/,/g' > "$BACKUP_DIR/$DATE/mysql/user.csv"
-$MYSQL -usave -psave -e "select * from mysql.db " | sed 's/\t/,/g' > "$BACKUP_DIR/$DATE/mysql/db.csv"
+$MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "select * from mysql.user " | sed 's/\t/,/g' > "$BACKUP_DIR/$DATE/mysql/user.csv"
+$MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "select * from mysql.db " | sed 's/\t/,/g' > "$BACKUP_DIR/$DATE/mysql/db.csv"
 
 find $BACKUP_DIR/* -mtime +$RETENTION -delete
