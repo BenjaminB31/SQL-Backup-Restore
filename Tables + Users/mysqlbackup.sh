@@ -1,13 +1,17 @@
 #!/bin/bash
 # https://github.com/BenjaminB31/SQL-Backup-Restore
 
+# Location of backups
 BACKUP_DIR="/home/save/sql"
 
+# SQL user
 MYSQL_USER="save"
 MYSQL_PASSWORD="save"
 
+# MySQL databases not to register
 SKIPDATABASES="information_schema|mysql|performance_schema|Database"
 
+# Duration in days of backups retention
 RETENTION=30
 
 

@@ -1,31 +1,31 @@
 #!/bin/bash
 # https://github.com/BenjaminB31/SQL-Backup-Restore
 
-#Localisation des backups
+# Location of backups
 BACKUP_DIR="/home/save/sql"
 
-# Utilisateur SQL
+# SQL user
 MYSQL_USER="save"
 MYSQL_PASSWORD="save"
 
 
 echo "$(ls $BACKUP_DIR)"
-read -p "Date de la backup: " date
+read -p "Date of backup: " date
 
 if [ -d "$BACKUP_DIR/$date" ];then
- echo -e "Liste des bases disponnible :";
+ echo -e "List of available bases :";
 else
-echo "Le dossier n'existe pas !";
+echo "The folder does not exist !";
 exit;
 fi
 
 echo "$(cd $BACKUP_DIR/$date; for f in *.sql.gz; do printf "%s\n" "${f%.sql.gz}"; done)"
-read -p "Nom de la base à restaurer: " db
+read -p "Name of the database to restore: " db
 
 if [ -f "$BACKUP_DIR/$date/$db.sql.gz" ];then
  echo -e "\n";
 else
-echo "La base n'existe pas !";
+echo "The base does not exist !";
 exit;
 fi
 
@@ -33,16 +33,16 @@ MYSQL=/usr/bin/mysql
 
 if [[ `$MYSQL --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "USE ${db};" 2> /tmp/error.logextract ; cat /tmp/error.logextract` = "ERROR 1049 (42000) at line 1: Unknown database '${db}'" ]];then
 	rm /tmp/error.logextract;
-    echo "La base n'existe pas et va être crée";
+    echo "The base does not exist and will be created";
     gunzip $BACKUP_DIR/$date/$db.sql.gz;
     $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD < "$BACKUP_DIR/$date/$db.sql";
     gzip $BACKUP_DIR/$date/$db.sql;
-    echo "Import effectuer";
+    echo "Import perform";
     exit;
 else
     rm /tmp/error.logextract;
-    echo "La base existe déja";
-    read -p "Voulez vous supprimer les données actuelles pour réinsérer la backup (y/n): " action
+    echo "The base already exists";
+     read -p "Do you want to delete the current data to reinsert the backup (y/n): " action
     
     if [ $action == "y" ]
     then
@@ -50,7 +50,7 @@ else
         gunzip $BACKUP_DIR/$date/$db.sql.gz;
         $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD < "$BACKUP_DIR/$date/$db.sql";
         gzip $BACKUP_DIR/$date/$db.sql;
-        echo "Import effectuer";
+        echo "Import perform";
         exit;
     else
         exit;

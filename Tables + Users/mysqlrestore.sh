@@ -1,10 +1,10 @@
 #!/bin/bash
 # https://github.com/BenjaminB31/SQL-Backup-Restore
 
-#Localisation des backups
+# Location of backups
 BACKUP_DIR="/home/save/sql"
 
-# Utilisateur SQL
+# SQL user
 MYSQL_USER="save"
 MYSQL_PASSWORD="save"
 
