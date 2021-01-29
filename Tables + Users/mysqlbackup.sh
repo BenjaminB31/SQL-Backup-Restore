@@ -30,7 +30,9 @@ $MYSQLDUMP --force --opt --user=$MYSQL_USER -p$MYSQL_PASSWORD --skip-lock-tables
 done
 echo "Users and rights"
 mkdir "$BACKUP_DIR/$DATE/mysql"
-$MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "select * from mysql.user " | sed 's/\t/,/g' > "$BACKUP_DIR/$DATE/mysql/user.csv"
-$MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "select * from mysql.db " | sed 's/\t/,/g' > "$BACKUP_DIR/$DATE/mysql/db.csv"
+
+mysql -B -N -u$MYSQL_USER -p$MYSQL_PASSWORD -e "SELECT CONCAT('\'', user,'\'@\'', host, '\'') FROM user WHERE user != 'debian-sys-maint' AND user != 'root' AND user != ''" mysql > "$BACKUP_DIR/$DATE/mysql/mysql_all_users.txt"
+while read line; do mysql -B -N --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "SHOW GRANTS FOR $line"; done < "$BACKUP_DIR/$DATE/mysql/mysql_all_users.txt" > "$BACKUP_DIR/$DATE/mysql/mysql_all_users_sql.sql" 
+sed -i 's/$/;/' "$BACKUP_DIR/$DATE/mysql/mysql_all_users_sql.sql"
 
 find $BACKUP_DIR/* -mtime +$RETENTION -delete
