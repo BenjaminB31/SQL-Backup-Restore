@@ -26,21 +26,25 @@ echo "$(cd $BACKUP_DIR/$date; for f in *.sql.gz; do printf "%s\n" "${f%.sql.gz}"
 if [ -d $BACKUP_DIR/$date/mysql/ ]; then
  echo "mysql";
 fi
- 
+echo "All_Databases";
+
 read -p "Name of the database to restore: " db
 
 if [ -f "$BACKUP_DIR/$date/$db.sql.gz" ];then
  echo -e "\n";
 else
- if [ $db ==  "mysql" ];
-    then
-     $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "USE mysql; LOAD DATA LOCAL INFILE '${BACKUP_DIR}/${date}/mysql/user.csv' INTO TABLE user  FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'  IGNORE 1 LINES;";
-     $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "USE mysql; LOAD DATA LOCAL INFILE '${BACKUP_DIR}/${date}/mysql/db.csv' INTO TABLE db FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'  IGNORE 1 LINES;";
-     echo "Import effectuer";
-     exit;
+    if [ $db ==  "mysql" ];
+        then
+        $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD < "$BACKUP_DIR/$date/mysql/mysql_all_users_sql.sql";
+        echo "Import effectuer";
+        exit;
+    elif [ $db ==  "All_Databases" ];
+        then
+        echo "All";
+        exit;
     else
-     echo "The base does not exist !";
-     exit;
+        echo "The base does not exist !";
+        exit;
     fi
 fi
 
