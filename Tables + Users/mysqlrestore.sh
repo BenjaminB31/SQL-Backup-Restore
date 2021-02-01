@@ -40,8 +40,39 @@ else
         exit;
     elif [ $db ==  "All_Databases" ];
         then
-        echo "All";
-        exit;
+
+        read -p "Do you want to delete the current data to reinsert the backup if databases already exist (y/n): " action
+        if [ $action == "y" ]
+        then
+            cd $BACKUP_DIR/$date;
+            for f in *.sql.gz;
+            do 
+                echo ${f%.sql.gz};
+                if [[ `$MYSQL --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "USE ${f%.sql.gz};" 2> /tmp/error.logextract ; cat /tmp/error.logextract` = "ERROR 1049 (42000) at line 1: Unknown database '${db}'" ]];then
+                    rm /tmp/error.logextract;
+                    echo "The base does not exist and will be created";
+                    gunzip $BACKUP_DIR/$date/$f;
+                    $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD < "$BACKUP_DIR/$date/${f%.sql.gz}.sql";
+                    gzip $BACKUP_DIR/$date/${f%.sql.gz}.sql;
+                    echo "Import perform";
+                    exit;
+                else
+                    rm /tmp/error.logextract;
+                    echo "The base already exists drop database";
+
+                    $MYSQL --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "DROP DATABASE ${f%.sql.gz};"
+                    gunzip $BACKUP_DIR/$date/$f;
+                    $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD < "$BACKUP_DIR/$date/${f%.sql.gz}.sql";
+                    gzip $BACKUP_DIR/$date/${f%.sql.gz}.sql;
+                    echo "Import perform";
+                fi
+            done;
+            echo "All databases is imported";
+            exit;
+        else
+            exit;
+        fi 
+
     else
         echo "The base does not exist !";
         exit;
