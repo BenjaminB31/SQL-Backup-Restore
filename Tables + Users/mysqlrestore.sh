@@ -2,7 +2,7 @@
 # https://github.com/BenjaminB31/SQL-Backup-Restore
 
 # Location of backups
-BACKUP_DIR="/home/save/sql"
+BACKUP_DIR="/home/dev/sql"
 
 # SQL user
 MYSQL_USER="save"
@@ -23,9 +23,10 @@ fi
 
 echo "$(cd $BACKUP_DIR/$date; for f in *.sql.gz; do printf "%s\n" "${f%.sql.gz}"; done)";
 
-if [ -d $BACKUP_DIR/$date/mysql/ ]; then
- echo "mysql";
+if [ -d $BACKUP_DIR/$date/users/ ]; then
+ echo "users";
 fi
+
 echo "All_Databases";
 
 read -p "Name of the database to restore: " db
@@ -33,9 +34,9 @@ read -p "Name of the database to restore: " db
 if [ -f "$BACKUP_DIR/$date/$db.sql.gz" ];then
  echo -e "\n";
 else
-    if [ $db ==  "mysql" ];
+    if [ $db ==  "users" ];
         then
-        $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD < "$BACKUP_DIR/$date/mysql/mysql_all_users_sql.sql";
+        $MYSQL --force --user=$MYSQL_USER --password=$MYSQL_PASSWORD < "$BACKUP_DIR/$date/users/mysql_all_users_sql.sql";
         echo "Import effectuer";
         exit;
     elif [ $db ==  "All_Databases" ];
@@ -78,7 +79,6 @@ else
         exit;
     fi
 fi
-
 if [[ `$MYSQL --user=$MYSQL_USER --password=$MYSQL_PASSWORD -e "USE ${db};" 2> /tmp/error.logextract ; cat /tmp/error.logextract` = "ERROR 1049 (42000) at line 1: Unknown database '${db}'" ]];then
 	rm /tmp/error.logextract;
     echo "The base does not exist and will be created";
